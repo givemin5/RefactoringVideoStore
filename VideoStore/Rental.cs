@@ -33,5 +33,17 @@ namespace VideoStore
             _movie = movie;
             _daysRented = daysRented;
         }
+
+        public double getCharge()
+        {
+            return Movie.getCharge(_daysRented);
+        }
+
+
+        public int getFrequentRenterPoints()
+        {
+            return Movie.getFrequentRenterPoints(_daysRented);
+        }
+
     }
 }

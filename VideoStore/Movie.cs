@@ -19,7 +19,7 @@ namespace VideoStore
     public class Movie
     {
         private string _title; //名稱
-        private MovieType _priceCode; //價格(代號)
+        private Price _price; //價格(代號)
 
         public string Title
         {
@@ -32,18 +32,28 @@ namespace VideoStore
         public MovieType PriceCode
         {
             get {
-                return _priceCode;
+                return _price.getPriceCode();
             }
             set
             {
-                _priceCode = value;
+                _price = PriceFactory.GetPriceByMovieType(value);
             }
         }
 
         public Movie(string title, MovieType priceCode)
         {
             _title = title;
-            _priceCode = priceCode;
+            PriceCode = priceCode;
+        }
+
+        public double getCharge(int daysRented)
+        {
+            return _price.getCharge(daysRented);
+        }
+
+        public int getFrequentRenterPoints(int daysRented)
+        {
+            return _price.getFrequentRenterPoints(daysRented);
         }
     }
 }

@@ -31,53 +31,50 @@ namespace VideoStore
 
         public string statement()
         {
-            double totalAmount = 0; //總消費金額
-            int frequentRenterPoints = 0; //常客績點
             List<Rental> rentals = _rentals;
             string result = "Rental Record for " + Name + "\n";
 
             foreach (var each in rentals)// 取得租借記錄
             {
-                double thisAmount = 0;
-
-                //determine amounts for each line
-                switch (each.Movie.PriceCode)
-                {
-                    case MovieType.REGULAR: //普通片
-                        thisAmount += 2;
-                        if (each.DaysRented > 2)
-                            thisAmount += (each.DaysRented - 2) * 1.5;
-                        break;
-
-                    case MovieType.NEW_RELEASE: //新片
-                        thisAmount += each.DaysRented * 3;
-                        break;
-
-                    case MovieType.CHILDRENS: //兒童片
-                        thisAmount += 1.5;
-                        if (each.DaysRented > 3)
-                            thisAmount += (each.DaysRented - 3) * 1.5;
-                        break;
-                }
-
-                //累加 常客點數
-                frequentRenterPoints++;
-
-                //兩天以上 額外點數
-                if (each.Movie.PriceCode == MovieType.NEW_RELEASE &&
-                    each.DaysRented >1)
-                    frequentRenterPoints++;
-
                 //顯示此筆租借記錄
                 result += "\t" + each.Movie.Title + "\t" +
-                    thisAmount.ToString("0") + "\n";
-                totalAmount += thisAmount;  
+                    each.getCharge() + "\n";
             }
 
             //footer 列印
-            result += "Amount owed is " + totalAmount.ToString("0") + "\n";
-            result += "You earned " + frequentRenterPoints.ToString("0") + " frequent renter points ";
+            result += "Amount owed is " + getTotalCharge() + "\n";
+            result += "You earned " + getTotalfrequentRenterPoints() + " frequent renter points ";
             return result;
         }
+
+        public string Htmlstatement()
+        {
+            List<Rental> rentals = _rentals;
+            string result = "<h1>Rental Record for <em>" + Name + "</em><h1>\n";
+
+            foreach (var each in rentals)// 取得租借記錄
+            {
+                //顯示此筆租借記錄
+                result +=  each.Movie.Title + " : " +
+                    each.getCharge() + "<br/>\n";
+            }
+
+            //footer 列印
+            result += "<p>Amount owed is <em>" + getTotalCharge() + "</em></p>\n";
+            result += "<p>You earned <em>" + getTotalfrequentRenterPoints() + "</em> frequent renter points </p>";
+            return result;
+        }
+
+        //總消費金額
+        public double getTotalCharge()
+        {
+            return _rentals.Sum(x => x.getCharge());
+        }
+        //常客績點
+        public double getTotalfrequentRenterPoints()
+        {
+            return _rentals.Sum(x => x.getFrequentRenterPoints());
+        }
+
     }
 }
